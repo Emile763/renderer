@@ -1,0 +1,32 @@
+@startuml
+
+
+class Shader {
+
+}
+
+class Window {
+
+}
+
+interface Drawable {
+    + getVAO()
+    + getVerticesNumber()
+}
+
+
+class RenderingQueues(){
+    + map<Drawable*, queue<Object*>> lists
+
+    + void addObjectToQueue(Drawable, Object)
+    + void deleteQueue(Drawable)
+
+    + pair<Drawable*, queue<Object*>>& getNextQueue()
+}
+
+
+interface Object {
+    void setShaderVariables();
+}
+
+@enduml
