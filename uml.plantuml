@@ -1,32 +1,172 @@
-@startuml
+@startuml renderer
 
-
-class Shader {
-
+struct Color {
+    float red
+    float green
+    float blue
+    float alpha
 }
 
-class Window {
+package window_package {
 
+    interface IInputHandler{
+        {abstract} + handleInput(Window& window, int key, int scancode, int action, int mods) 
+    }
+    interface IDrawable {
+        {abstract} + GLuint getVAO()
+        {abstract} + unsigned int getVerticesNumber()
+    }
+    class Window {
+        {static} - int number_of_windows
+        {static} - GLFWwindow* current_context_window
+        {static} - bool drawing
+
+        - GLFWwindow* m_window
+        - int m_width
+        - string m_title
+        - GLint m_draw_mode
+
+
+
+        {static} - keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)  
+        {static} + update()
+
+        - makeContextCurrent() : bool
+
+        + Window(const int& width, const int& height, const std::string title)
+        + \~Window()
+
+        + setBackgroundColor(const Color& color)
+
+        + beginDraw()
+        + draw(const IDrawable& drawable)
+        + endDraw()
+
+        + shouldClose() : bool
+        + close()
+
+        + setInputHandler(IInputHandler &input_handler)
+
+        + disableCursor()
+        + enableCursor()
+
+        + getMousePosition() : Vec2
+        + setMousePosition(const Vec2 &position) 
+
+        
+    }
+
+    Window *-- "m_background_color" Color
+    Window o-- "m_input_handler 0..1" IInputHandler
 }
 
-interface Drawable {
-    + getVAO()
-    + getVerticesNumber()
+
+interface IObject {
+    {abstract} + setShaderVariables()
 }
 
+abstract Movable3D {
+    # Vec3 m_rotation
+    # Mat4 m_translaton_matrix
+    # Mat4 m_rotation_matrix
+    # Mat4 m_scale_matrix
 
-class RenderingQueues(){
-    + map<Drawable*, queue<Object*>> lists
+    # Movable3D()
 
-    + void addObjectToQueue(Drawable, Object)
-    + void deleteQueue(Drawable)
+    + getPosition() : Vec3
+    + getRotation() : Vec3
+    + getScale() : Vec3
 
-    + pair<Drawable*, queue<Object*>>& getNextQueue()
+    + setPosition(Vec3 &new_position)
+    + setRotation(Vec3 &new_position)
+    + setScale(Vec3 &new_scale)
 }
 
-
-interface Object {
-    void setShaderVariables();
+class Object3D {
+    + Object3D()
+    + setShaderVariables()
 }
+IObject <|.. Object3D
+Movable3D <|-- Object3D
+
+class Model implements IDrawable {
+    - float m_vertices 0..*  
+    - float m_normals 0..*  
+    - float m_texture_coords 0..*  
+
+    - GLuint m_VAO
+    - GLuint m_vertex_VBO
+    - GLuint m_normal_VBO
+    - GLuint m_texture_coord_VBO
+
+    + Model(string obj_path)
+    + ~Model()
+
+    + getVAO() GLuint
+    + getVerticesNumber() unsigned int
+    + saveAsBinobj(string path, string name)
+}
+
+class Camera {
+    - float m_aspect_ratio
+    - float m_near_plane
+    - float m_far_plane
+    - float m_vertical_fov
+    - Mat4 m_projection_matrix
+
+    + Camera(float aspect_ratio, float near, float far, float fov)
+
+    + setShaderVariables()
+
+    + setPosition(Vec3 new_position)
+    + setRotation(Vec3 new_rotation)
+    + getPosition() Vec3
+    + getRotation() Vec3
+
+    + LookAt(Vec3 position)
+    + getDirection() Vec3
+}
+IObject <|.. Camera
+Movable3D <|-- Camera
+
+
+package shader_package {
+    enum ShaderVarLocations {
+        POSITION           = 0
+        NORMAL             = 1
+        TEXTURE_COORD      = 2
+        COLOR              = 3
+
+        PROJECTION_MATRIX  = 4
+        TRANSLATION_MATRIX = 5
+        ROTATION_MATRIX    = 6
+        SCALE_MATRIX       = 7
+        VIEW_MATRIX        = 8
+
+        CAMERA_POS         = 9
+        TIME               = 10
+    }
+
+    class Shader {
+        {static} - Shader current_shader
+
+        - GLuint m_program_id
+        
+        {static} - string getFileContent(string path)
+        {static} + setInt(ShaderVarLocations location, const int& value)
+        {static} + setFloat(ShaderVarLocations location, const float& value)
+        {static} + setVec2(ShaderVarLocations location, const Vec2& value)
+        {static} + setVec3(ShaderVarLocations location, const Vec3& value)
+        {static} + setVec4(ShaderVarLocations location, const Vec4& value)
+        {static} + setMat2(ShaderVarLocations location, const Mat2& value)
+        {static} + setMat3(ShaderVarLocations location, const Mat3& value)
+        {static} + setMat4(ShaderVarLocations location, const Mat4& value)
+
+        + Shader(string vertex_shader_path, string fragment_shader_path)
+        + ~Shader()
+        + use()
+    }
+}
+
 
 @enduml

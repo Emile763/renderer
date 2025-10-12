@@ -18,12 +18,14 @@ public:
     const Column& operator[](const unsigned int& i) const;
 
     template <unsigned int n2>
-    Matrix<n2, m, T> operator*(const Matrix<n2, n, T>& other);
+    Matrix<n2, m, T> operator*(const Matrix<n2, n, T>& other) const;
+    
+    Vector<m, T> operator*(const Vector<n, T>& other) const; 
 };
 
 template <unsigned int n, unsigned int m, typename T>
 template<unsigned int n2>
-inline Matrix<n2, m, T> Matrix<n, m, T>::operator*(const Matrix<n2, n, T>& other)
+inline Matrix<n2, m, T> Matrix<n, m, T>::operator*(const Matrix<n2, n, T>& other) const
 {
     Matrix<n2, m, T> result;
     for (unsigned int i = 0; i < n2; i++)
@@ -32,6 +34,8 @@ inline Matrix<n2, m, T> Matrix<n, m, T>::operator*(const Matrix<n2, n, T>& other
                 result[i][j] += (*this)[i][k] * other[k][j];
     return result;
 }
+
+
 
 template class Matrix<2, 2>;
 typedef Matrix<2, 2> Mat2;

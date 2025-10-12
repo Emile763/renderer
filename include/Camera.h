@@ -1,8 +1,8 @@
 #pragma once
-#include "Object.h"
+#include "IObject.h"
 #include "Movable3D.h"
 #include "Matrix.h"
-class Camera : public Object, public Movable3D
+class Camera : public IObject, public Movable3D
 {
 private:
     float m_aspect_ratio;
@@ -15,5 +15,13 @@ public:
     Camera(const float& aspect_ratio, const float& near, const float& far, const float& fov);
     virtual void setShaderVariables() const override;
 
+    void setPosition(const Vec3& new_position) override;
+    void setRotation(const Vec3& new_rotation) override;
+    
+    const Vec3 getPosition() const override;
+    const Vec3 getRotation() const override;
+    
     void LookAt(const Vec3& position);
+
+    Vec3 getDirection();
 };

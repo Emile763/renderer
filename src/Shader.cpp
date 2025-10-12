@@ -118,10 +118,10 @@ void Shader::setVec2(ShaderVarLocations location, const Vec2& value) {
     glUniform2f((int)location, value[0], value[1]);
 }
 void Shader::setVec3(ShaderVarLocations location, const Vec3& value) {
-    glUniform3f((int)location, value[0], value[1], value[3]);
+    glUniform3f((int)location, value[0], value[1], value[2]);
 }
 void Shader::setVec4(ShaderVarLocations location, const Vec4& value) {
-    glUniform4f((int)location, value[0], value[1], value[3], value[4]);
+    glUniform4f((int)location, value[0], value[1], value[2], value[3]);
 }
 void Shader::setMat2(ShaderVarLocations location, const Mat2& value) {
     glUniformMatrix2fv((int)location, 1, GL_TRUE, value.getData());

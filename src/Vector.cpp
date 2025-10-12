@@ -44,14 +44,29 @@ template<unsigned int n, typename T>
 Vector<n, T> Vector<n, T>::operator+(const Vector<n, T>& other) const
 {
     Vector<n, T> result = *this;
-
-    for(unsigned int i = 0; i < n; i++){
-        result[i] += other[i];
-    }
-    return result;
-    return Vector<n, T>();
+    return result += other;
 }
 
+template<unsigned int n, typename T>
+Vector<n, T>& Vector<n, T>::operator+=(const Vector<n, T>& other)
+{
+    for(unsigned int i = 0; i < n; i++){
+        (*this)[i] += other[i];
+    }
+    return *this;
+}
+
+template<unsigned int n, typename T>
+Vector<n, T> Vector<n, T>::operator-(const Vector<n,T>& other) const {
+    return *this + -other;
+}
+
+template<unsigned int n, typename T>
+Vector<n, T>& Vector<n, T>::operator-=(const Vector<n, T>& other)
+{
+    *this += -other; 
+    return *this;
+}
 
 template <unsigned int n, typename T>
 Vector<n,T>& Vector<n, T>::normalize(){

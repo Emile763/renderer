@@ -1,21 +1,27 @@
 #pragma once
 #include <Vector.h>
+#include <Matrix.h>
 
 class Movable3D
 {
 protected:
-    Vec3 m_position;
     Vec3 m_rotation;
-    Vec3 m_scale;
+
+    Mat4 m_translation_matrix;
+    Mat4 m_rotation_matrix;
+    Mat4 m_scale_matrix;    
+
     Movable3D();
+
 public:
 
-    virtual const Vec3& getPosition() const;
-    virtual const Vec3& getRotation() const;
-    virtual const Vec3& getScale() const;
+    virtual const Vec3 getPosition() const;
+    virtual const Vec3 getRotation() const;
+    virtual const Vec3 getScale() const;
 
-    virtual void setPosition(Vec3&& new_position);
-    virtual void setRotation(Vec3&& new_rotation);
-    virtual void setScale(Vec3&& new_scale);
+    virtual void setPosition(const Vec3& new_position);
+    virtual void setRotation(const Vec3& new_rotation);
+    virtual void setScale(const Vec3& new_scale);
+
 };
 

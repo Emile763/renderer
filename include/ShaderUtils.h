@@ -3,14 +3,16 @@
 enum class ShaderVarLocations{
     POSITION           = 0,
     NORMAL             = 1,
-    COLOR              = 2,
+    TEXTURE_COORD      = 2,
+    COLOR              = 3,
 
-    PROJECTION_MATRIX  = 3,
-    TRANSLATION_MATRIX = 4,
-    ROTATION_MATRIX    = 5,
-    SCALE_MATRIX       = 6,
-    VIEW_MATRIX        = 7,
+    PROJECTION_MATRIX  = 4,
+    TRANSLATION_MATRIX = 5,
+    ROTATION_MATRIX    = 6,
+    SCALE_MATRIX       = 7,
+    VIEW_MATRIX        = 8,
 
-    TIME               = 8,
+    CAMERA_POS         = 9,
+    TIME               = 10,
 
 };

@@ -1,8 +1,8 @@
 #pragma once
-#include "Drawable.h"
+#include "IDrawable.h"
 #include <GL/glew.h>
 
-class Cube : public Drawable {
+class Cube : public IDrawable {
 private:
     GLuint m_VAO;
     GLuint m_vertex_VBO;

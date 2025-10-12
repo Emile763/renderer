@@ -1,5 +1,5 @@
 #pragma once
-class Object{
+class IObject{
 public:
     virtual void setShaderVariables() const = 0;
 };

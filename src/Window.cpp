@@ -4,7 +4,7 @@
 #include <assert.h>
 // Static Members Initialization
 int Window::number_of_windows = 0;
-GLFWwindow *Window::current_context_window = NULL;
+GLFWwindow* Window::current_context_window = NULL;
 bool Window::drawing = false;
 
 bool Window::makeContextCurrent()
@@ -21,8 +21,10 @@ bool Window::makeContextCurrent()
 
 
 
-Window::Window(const int &width, const int &height, const std::string title)
-    : m_width(width), m_height(height), m_title(title), m_background_color(Color())
+
+Window::Window(const int& width, const int& height, const std::string title)
+    : m_width(width), m_height(height), m_title(title), m_background_color(Color()),
+    m_input_handler(nullptr)
 {
     if (!number_of_windows)
     {
@@ -40,12 +42,16 @@ Window::Window(const int &width, const int &height, const std::string title)
         std::cerr << "Error While Initializing glew: " << glewGetErrorString(err) << "\n";
         exit(EXIT_FAILURE);
     }
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable( GL_BLEND );
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    // glEnable(GL_BLEND);
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+    glEnable(GL_DEPTH_TEST);
     glfwSwapInterval(0);
     number_of_windows++;
+
+    glfwSetWindowUserPointer(m_window, this);
+
 }
 
 Window::~Window()
@@ -59,7 +65,7 @@ Window::~Window()
     }
 }
 
-void Window::setBackgroundColor(const Color &color)
+void Window::setBackgroundColor(const Color& color)
 {
     assert(!drawing);
     m_background_color = color;
@@ -87,7 +93,7 @@ void Window::beginDraw()
     {
         glClearColor(m_background_color.red, m_background_color.green, m_background_color.blue, m_background_color.alpha);
     }
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void Window::endDraw()
@@ -96,7 +102,7 @@ void Window::endDraw()
     drawing = false;
 }
 
-void Window::draw(const Drawable &drawable)
+void Window::draw(const IDrawable& drawable)
 {
     glBindVertexArray(drawable.getVAO());
     glDrawArrays(m_draw_mode, 0, drawable.getVerticesNumber());
@@ -115,7 +121,32 @@ void Window::close()
     m_window = NULL;
 }
 
-void Window::setKeyCallback(void(*key_callback)(GLFWwindow* window, int key, int scancode, int action, int mods))
+void Window::keyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-    glfwSetKeyCallback(m_window, key_callback);
+    Window* abstract_window = static_cast<Window*> (glfwGetWindowUserPointer(window));
+    abstract_window->m_input_handler->handleInput(*abstract_window, key, scancode, action, mods);
+}
+
+
+void Window::setInputHandler(IInputHandler& input_handler)
+{
+    m_input_handler = &input_handler;
+    glfwSetKeyCallback(m_window, &Window::keyCallBack);
+}
+
+
+void Window::disableCursor() {
+    glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+}
+void Window::enableCursor() {
+    glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+}
+
+Vec2 Window::getMousePosition() const {
+    double x, y;
+    glfwGetCursorPos(m_window, &x, &y);
+    return Vec2{(float)x, (float)y};
+}
+void Window::setMousePosition(const Vec2& position) {
+    glfwSetCursorPos(m_window, position[0], position[1]);
 }

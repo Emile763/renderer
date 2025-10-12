@@ -25,18 +25,41 @@ Camera::Camera(const float& aspect_ratio, const float& near, const float& far, c
 }
 
 
+void Camera::setPosition(const Vec3& new_position) {
+    Movable3D::setPosition(-new_position);
+}
+void Camera::setRotation(const Vec3& new_rotation) {
+    Movable3D::setRotation(new_rotation);
+}
+
+const Vec3 Camera::getPosition() const{
+    return -Movable3D::getPosition();
+}
+
+const Vec3 Camera::getRotation() const{
+    return Movable3D::getRotation();
+}
 
 void Camera::setShaderVariables() const {
-    Mat4 view_matrix = Get3DRotationMatrix(-m_rotation) * Get3DTranslationMatrix(-m_position);
     
+    Mat4 view_matrix = m_rotation_matrix * m_translation_matrix;
     Shader::setMat4(ShaderVarLocations::VIEW_MATRIX, view_matrix);
     Shader::setMat4(ShaderVarLocations::PROJECTION_MATRIX, m_projection_matrix);
+    Shader::setVec3(ShaderVarLocations::CAMERA_POS, getPosition());
 }
 
 void Camera::LookAt(const Vec3& position)
 {
+    Vec3 current_position = getPosition();
     // m_rotation[0] = atan2(position[2] - m_position[2], position[0] - m_position[0]);
-    m_rotation[1] = std::atan2f(m_position[0] - position[0], m_position[2] - position[2]);
+    m_rotation[1] = std::atan2f(current_position[0] - position[0], current_position[2] - position[2]);
     // std::cout << m_rotation[1] * 180.f / 3.1415926f << "\n";
     // m_rotation[2] = atan2(position[2] - m_position[2], position[1] - m_position[1]);
+}
+
+Vec3 Camera::getDirection()
+{
+    Vec4 direction = m_rotation_matrix * Vec4{0.f, 0.f, -1.f, 0.f};
+
+    return Vec3({direction[0], direction[1], direction[2]});
 }

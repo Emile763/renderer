@@ -3,7 +3,10 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <queue>
-#include "Drawable.h"
+#include "IDrawable.h"
+#include "IInputHandler.h"
+#include "Vector.h"
+
 // Has to be maintain on the main thread
 struct Color
 {
@@ -23,34 +26,39 @@ private:
     const std::string m_title;
     Color m_background_color;
     GLint m_draw_mode = GL_TRIANGLES;
+    IInputHandler *m_input_handler;
 
     static int number_of_windows;
     static GLFWwindow* current_context_window;
     static bool drawing;
 
-    void (*m_key_callback) (GLFWwindow* window, int key, int scancode, int action, int mods);
+    static void keyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods);
+    
     // Return false if the window is already the current context window
     bool makeContextCurrent();
 
-    // void keyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods);
 public:
+    // update all the windows by handling the different events
+    void static update();
+
     Window(const int& width, const int& height, const std::string title);
     ~Window();
 
     void setBackgroundColor(const Color& color);
 
-    // update all the windows by handling the different events
-    void static update();
-
-    bool shouldClose();
-
     void beginDraw();
-
-    void draw(const Drawable& drawable);
-
+    void draw(const IDrawable& drawable);
     void endDraw();
-
+    
+    bool shouldClose();
     void close();
 
-    void setKeyCallback(void (*key_callback) (GLFWwindow* window, int key, int scancode, int action, int mods));
+    void setInputHandler(IInputHandler &input_handler);
+
+    void disableCursor();
+    void enableCursor();
+
+    Vec2 getMousePosition() const;
+    void setMousePosition(const Vec2 &position);
+
 };

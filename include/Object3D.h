@@ -1,7 +1,7 @@
 #pragma once
-#include "Object.h"
+#include "IObject.h"
 #include "Movable3D.h"
-class Object3D : public Object, public Movable3D
+class Object3D : public IObject, public Movable3D
 {
 public:
     Object3D();
