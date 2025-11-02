@@ -1,9 +1,14 @@
 #pragma once
 #include <GL/glew.h>
 
-class IDrawable{
-    
+class IDrawable {
 public:
-    virtual GLuint getVAO() const = 0;
-    virtual unsigned int getVerticesNumber() const = 0;
+    virtual ~IDrawable() = default;
+
+    // Init and end drawing
+    virtual void draw() const = 0;
+
+    // Can be needed for optimisation
+    virtual void initDrawing() const = 0;
+    virtual void endDrawing() const = 0;
 };

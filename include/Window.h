@@ -5,7 +5,9 @@
 #include <queue>
 #include "IDrawable.h"
 #include "IInputHandler.h"
+#include "IFocusHandler.h"
 #include "Vector.h"
+#include "DrawingQueue.h"
 
 // Has to be maintain on the main thread
 struct Color
@@ -25,14 +27,15 @@ private:
     int m_height;
     const std::string m_title;
     Color m_background_color;
-    GLint m_draw_mode = GL_TRIANGLES;
     IInputHandler *m_input_handler;
+    IFocusHandler *m_focus_handler;
 
     static int number_of_windows;
     static GLFWwindow* current_context_window;
     static bool drawing;
 
     static void keyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods);
+    static void focusCallBack(GLFWwindow* window, int focused);
     
     // Return false if the window is already the current context window
     bool makeContextCurrent();
@@ -47,13 +50,15 @@ public:
     void setBackgroundColor(const Color& color);
 
     void beginDraw();
-    void draw(const IDrawable& drawable);
     void endDraw();
+
+    void setVSync(const bool& state);
     
     bool shouldClose();
     void close();
 
-    void setInputHandler(IInputHandler &input_handler);
+    void setInputHandler(IInputHandler *input_handler = nullptr);
+    void setFocusHandler(IFocusHandler *focus_handler = nullptr);
 
     void disableCursor();
     void enableCursor();

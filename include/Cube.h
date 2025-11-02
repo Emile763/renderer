@@ -1,15 +1,15 @@
 #pragma once
-#include "IDrawable.h"
-#include <GL/glew.h>
+#include "Model.h"
 
-class Cube : public IDrawable {
+class Cube : public Model {
 private:
-    GLuint m_VAO;
-    GLuint m_vertex_VBO;
-public:
+    static Cube* m_cube;
     Cube();
-    ~Cube();
 
-    GLuint getVAO() const override;
-    unsigned int getVerticesNumber() const override;
+public:
+    Cube(Cube&) = delete;
+    void operator=(const Cube&) = delete;
+
+    static const Cube& getInstance();
+    static void deleteInstance();
 };

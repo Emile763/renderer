@@ -1,9 +1,15 @@
 cmake_minimum_required(VERSION 4.0.0)
 project(Renderer LANGUAGES CXX)
 
-# enable_testing()
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release)
+endif()
+
+set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+set(CMAKE_CXX_FLAGS_DEBUG "-g")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 option(ONLY_LIBS "" ON)
 add_subdirectory(third-party/glew)
@@ -16,17 +22,18 @@ set(GLFW_BUILD_WAYLAND OFF CACHE BOOL "" FORCE)
 add_subdirectory(third-party/glfw)
 
 add_executable("RendererApp" 
-    src/main.cpp
+    src/Camera.cpp
     src/Cube.cpp
-    src/Matrix.cpp
+    src/main.cpp
     src/MatrixUtils.cpp
+    src/Model.cpp
+    src/Movable3D.cpp
     src/Object3D.cpp
     src/Shader.cpp
     src/Vector.cpp
     src/Window.cpp
-    src/Movable3D.cpp
-    src/Camera.cpp
-    src/Model.cpp
+    src/DrawingQueue.cpp
+    src/EmptyShaderParameter.cpp
     )
 file(COPY ./shaders DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY ./models DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

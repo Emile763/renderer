@@ -18,6 +18,6 @@ void main(){
 
 
     w_normal    = normale_mat * a_normal;
-    w_pos       = vec3(model * vec4(a_position, 1.f));
+    w_pos       = normalize(vec3(model * vec4(a_position, 1.f)));
     gl_Position =  projection * view * model * vec4(a_position, 1.f);
 }

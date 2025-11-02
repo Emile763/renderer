@@ -11,9 +11,14 @@ private:
     GLuint m_program_id;
 
     static Shader current_shader;
-public:
 
-    Shader(const std::string vertex_shader_path, const std::string fragment_shader_path);
+    static Shader* default_3D_shader;
+
+public:
+    Shader();
+    Shader(const std::string& vertex_shader_path, const std::string& fragment_shader_path);
+    void load(const std::string& vertex_shader, const std::string& fragment_shader);
+    void loadFromFiles(const std::string& vertex_shader_path, const std::string& fragment_shader_path);
     ~Shader();
     void use() const;
 
@@ -26,4 +31,9 @@ public:
     static void setMat3(ShaderVarLocations location, const Mat3& value);
     static void setMat4(ShaderVarLocations location, const Mat4& value);
 
+
+    static const Shader& getDefault3DShader();
+
 };
+
+Shader loadShader(const std::string& vertex_shader, const std::string& fragment_shader);

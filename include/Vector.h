@@ -33,7 +33,7 @@ public:
 template <unsigned int n, typename T>
 std::ostream& operator<<(std::ostream& out, const Vector<n, T> &vec) {
     out << "(";
-    for(int i = 0; i < n; i++){
+    for(unsigned int i = 0; i < n; i++){
         out << vec[i] << ", ";
     }
     out << ")";

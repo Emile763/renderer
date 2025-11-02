@@ -40,7 +40,7 @@ const Vec3 Camera::getRotation() const{
     return Movable3D::getRotation();
 }
 
-void Camera::setShaderVariables() const {
+void Camera::setShaderParameters() const {
     
     Mat4 view_matrix = m_rotation_matrix * m_translation_matrix;
     Shader::setMat4(ShaderVarLocations::VIEW_MATRIX, view_matrix);

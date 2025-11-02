@@ -1,7 +1,7 @@
 #include "Movable3D.h"
 #include "MatrixUtils.h"
 Movable3D::Movable3D()
-    : m_translation_matrix{Identity}, m_rotation{ 0.f,0.f,0.f }, m_scale_matrix{Identity}
+    : m_rotation{ 0.f,0.f,0.f }, m_translation_matrix{Identity}, m_rotation_matrix() ,m_scale_matrix{Identity}
 {
     setRotation(m_rotation);
 }

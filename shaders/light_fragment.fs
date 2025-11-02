@@ -19,7 +19,7 @@ const float specular_strength = 0.5;
 const int shininess = 32;
 
 void main(){
-    float diffuse_coef = max(dot(w_normal, light_dir), 0.0); 
+    float diffuse_coef = max(dot(-light_dir, w_normal), 0.0); 
     
     vec3  viewDir    = normalize(camera_pos - w_pos);
     vec3  reflectDir = reflect(light_dir, w_normal);

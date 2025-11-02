@@ -34,6 +34,7 @@ Window::Window(const int& width, const int& height, const std::string title)
             exit(EXIT_FAILURE);
         }
     }
+
     m_window = glfwCreateWindow(m_width, m_height, m_title.c_str(), NULL, NULL);
     glfwMakeContextCurrent(m_window);
     GLenum err = glewInit();
@@ -45,9 +46,9 @@ Window::Window(const int& width, const int& height, const std::string title)
     // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     // glEnable(GL_BLEND);
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
     glEnable(GL_DEPTH_TEST);
-    glfwSwapInterval(0);
+    
+    glEnable(GL_CULL_FACE);
     number_of_windows++;
 
     glfwSetWindowUserPointer(m_window, this);
@@ -102,10 +103,9 @@ void Window::endDraw()
     drawing = false;
 }
 
-void Window::draw(const IDrawable& drawable)
+void Window::setVSync(const bool& state)
 {
-    glBindVertexArray(drawable.getVAO());
-    glDrawArrays(m_draw_mode, 0, drawable.getVerticesNumber());
+    glfwSwapInterval(state);
 }
 
 void Window::close()
@@ -126,20 +126,34 @@ void Window::keyCallBack(GLFWwindow* window, int key, int scancode, int action, 
     Window* abstract_window = static_cast<Window*> (glfwGetWindowUserPointer(window));
     abstract_window->m_input_handler->handleInput(*abstract_window, key, scancode, action, mods);
 }
-
-
-void Window::setInputHandler(IInputHandler& input_handler)
+void Window::focusCallBack(GLFWwindow* window, int focused)
 {
-    m_input_handler = &input_handler;
+    Window* abstract_window = static_cast<Window*> (glfwGetWindowUserPointer(window));
+    abstract_window->m_focus_handler->handleFocus(*abstract_window, focused);
+}
+
+void Window::setInputHandler(IInputHandler* input_handler)
+{
+    m_input_handler = input_handler;
     glfwSetKeyCallback(m_window, &Window::keyCallBack);
 }
 
 
+void Window::setFocusHandler(IFocusHandler* focus_handler)
+{
+    m_focus_handler = focus_handler;
+    glfwSetWindowFocusCallback(m_window, &Window::focusCallBack);
+}
+
 void Window::disableCursor() {
     glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    if (glfwRawMouseMotionSupported())
+        glfwSetInputMode(m_window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
 }
 void Window::enableCursor() {
     glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    if (glfwRawMouseMotionSupported())
+        glfwSetInputMode(m_window, GLFW_RAW_MOUSE_MOTION, GLFW_FALSE);
 }
 
 Vec2 Window::getMousePosition() const {
@@ -150,3 +164,5 @@ Vec2 Window::getMousePosition() const {
 void Window::setMousePosition(const Vec2& position) {
     glfwSetCursorPos(m_window, position[0], position[1]);
 }
+
+

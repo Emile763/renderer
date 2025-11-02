@@ -1,9 +1,9 @@
 #pragma once
-#include "IObject.h"
+#include "IShaderParameter.h"
 #include "Movable3D.h"
-class Object3D : public IObject, public Movable3D
+class Object3D : public IShaderParameter, public Movable3D
 {
 public:
     Object3D();
-    virtual void setShaderVariables() const override;
+    virtual void setShaderParameters() const override;
 };
