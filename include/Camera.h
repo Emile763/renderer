@@ -16,10 +16,8 @@ public:
     virtual void setShaderParameters() const override;
 
     void setPosition(const Vec3& new_position) override;
-    void setRotation(const Vec3& new_rotation) override;
     
-    const Vec3 getPosition() const override;
-    const Vec3 getRotation() const override;
+    Vec3 getPosition() const override;
     
     void LookAt(const Vec3& position);
 

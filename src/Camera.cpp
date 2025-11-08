@@ -28,16 +28,9 @@ Camera::Camera(const float& aspect_ratio, const float& near, const float& far, c
 void Camera::setPosition(const Vec3& new_position) {
     Movable3D::setPosition(-new_position);
 }
-void Camera::setRotation(const Vec3& new_rotation) {
-    Movable3D::setRotation(new_rotation);
-}
 
-const Vec3 Camera::getPosition() const{
+Vec3 Camera::getPosition() const{
     return -Movable3D::getPosition();
-}
-
-const Vec3 Camera::getRotation() const{
-    return Movable3D::getRotation();
 }
 
 void Camera::setShaderParameters() const {

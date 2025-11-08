@@ -15,9 +15,9 @@ protected:
 
 public:
 
-    virtual const Vec3 getPosition() const;
-    virtual const Vec3 getRotation() const;
-    virtual const Vec3 getScale() const;
+    virtual Vec3 getPosition() const;
+    virtual Vec3 getRotation() const;
+    virtual Vec3 getScale() const;
 
     virtual void setPosition(const Vec3& new_position);
     virtual void setRotation(const Vec3& new_rotation);

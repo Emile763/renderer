@@ -1,4 +1,4 @@
-#include "Cube.h"
+#include "CubeModel.h"
 #include <vector>
 
 constexpr float cube_vertices[] = {
@@ -118,24 +118,24 @@ constexpr float cube_normals[] = {
 };
 
 
-Cube* Cube::m_cube = nullptr;
+CubeModel* CubeModel::m_cube = nullptr;
 
 
 
-Cube::Cube() : Model()
+CubeModel::CubeModel() : Model()
 {
     this->setVertices(std::vector<float>(cube_vertices, cube_vertices + sizeof(cube_vertices) / sizeof(float)));
     this->setNormals(std::vector<float>(cube_normals, cube_normals + sizeof(cube_normals) / sizeof(float)));
 }
 
-const Cube& Cube::getInstance()
+const CubeModel& CubeModel::getInstance()
 {
     if(m_cube == nullptr)
-        m_cube = new Cube;
+        m_cube = new CubeModel;
     return *m_cube;
 }
 
-void Cube::deleteInstance()
+void CubeModel::deleteInstance()
 {
     if(m_cube != nullptr)
     {

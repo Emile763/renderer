@@ -200,3 +200,11 @@ const Shader& Shader::getDefault3DShader()
 
     return *default_3D_shader;
 }
+
+void Shader::deleteDefault3DShader()
+{
+    if (default_3D_shader != nullptr)
+    {
+        delete default_3D_shader;
+    }
+}

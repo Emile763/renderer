@@ -16,24 +16,24 @@ Model::Model(const std::string& obj_path) : Model()
     std::vector<std::string> vertice_strings;
     std::vector<std::string> normal_strings;
     std::vector<std::string> texture_coord_strings;
-    
+
     std::vector<std::string> face_strings;
-    
+
     std::string line;
     while (std::getline(obj_file, line)) {
         if (line[0] == 'v') {
             switch (line[1])
             {
-                case ' ':
+            case ' ':
                 vertice_strings.push_back(line.substr(2));
                 break;
-                case 't':
+            case 't':
                 texture_coord_strings.push_back(line.substr(3));
                 break;
-                case 'n':
+            case 'n':
                 normal_strings.push_back(line.substr(3));
                 break;
-                default:
+            default:
                 break;
             }
         }
@@ -41,12 +41,12 @@ Model::Model(const std::string& obj_path) : Model()
             face_strings.push_back(line.substr(2));
         }
     }
-    
+
     std::vector<float> vertices;
     std::vector<float> normals;
     std::vector<float> texture_coords;
 
-    
+
     vertices.reserve(face_strings.size() * 3 * 3);
     if (!texture_coord_strings.empty()) {
         texture_coords.reserve(face_strings.size() * 3 * 2);
@@ -58,24 +58,24 @@ Model::Model(const std::string& obj_path) : Model()
     for (auto& face : face_strings) {
         std::replace(face.begin(), face.end(), '/', ' ');
         std::istringstream face_stream(face);
-        
+
         for (int i = 0; i < 3; i++)
         {
             int vertice_index;
             face_stream >> vertice_index;
-            std::istringstream vertex_stream(vertice_strings[vertice_index-1]);
-            
+            std::istringstream vertex_stream(vertice_strings[vertice_index - 1]);
+
             float vertice_coord;
             while (vertex_stream >> vertice_coord)
             {
                 vertices.push_back(vertice_coord);
             }
-            
+
             if (!texture_coord_strings.empty()) {
                 int texture_coord_index;
                 face_stream >> texture_coord_index;
-                std::istringstream texture_coord_stream(texture_coord_strings[texture_coord_index-1]);
-                
+                std::istringstream texture_coord_stream(texture_coord_strings[texture_coord_index - 1]);
+
                 float texture_coord;
                 while (texture_coord_stream >> texture_coord)
                 {
@@ -85,8 +85,8 @@ Model::Model(const std::string& obj_path) : Model()
             if (!normal_strings.empty()) {
                 int normal_index;
                 face_stream >> normal_index;
-                std::istringstream normal_stream(normal_strings[normal_index-1]);
-                
+                std::istringstream normal_stream(normal_strings[normal_index - 1]);
+
                 float normal_coord;
                 while (normal_stream >> normal_coord)
                 {
@@ -95,9 +95,9 @@ Model::Model(const std::string& obj_path) : Model()
             }
         }
     }
-    
+
     setVertices(vertices);
-    
+
     if (!normals.empty())
     {
         setNormals(normals);
@@ -106,7 +106,7 @@ Model::Model(const std::string& obj_path) : Model()
     {
         setTextureCoords(texture_coords);
     }
-    
+
 }
 
 Model::~Model()
@@ -117,34 +117,34 @@ Model::~Model()
     glDeleteBuffers(1, &m_texture_coord_VBO);
 }
 
-void Model::setVertices(const std::vector<float>& vertices){
-    if(m_vertex_VBO == 0){
+void Model::setVertices(const std::vector<float>& vertices, const float& dimension) {
+    if (m_vertex_VBO == 0) {
         glCreateBuffers(1, &m_vertex_VBO);
     }
     glBindVertexArray(m_VAO);
     glBindBuffer(GL_ARRAY_BUFFER, m_vertex_VBO);
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
-    glVertexAttribPointer((GLuint)ShaderVarLocations::POSITION, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(0));
+    glVertexAttribPointer((GLuint)ShaderVarLocations::POSITION, dimension, GL_FLOAT, GL_FALSE, dimension * sizeof(float), (void*)(0));
     glEnableVertexAttribArray((GLuint)ShaderVarLocations::POSITION);
     glBindVertexArray(0);
 
-    m_vertices_number = vertices.size() / 3;
+    m_vertices_number = vertices.size() / dimension;
 
 }
-void Model::setNormals(const std::vector<float>& normals){
-    if(m_normal_VBO == 0){
+void Model::setNormals(const std::vector<float>& normals, const float& dimension) {
+    if (m_normal_VBO == 0) {
         glCreateBuffers(1, &m_normal_VBO);
     }
     glBindVertexArray(m_VAO);
     glBindBuffer(GL_ARRAY_BUFFER, m_normal_VBO);
     glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(float), normals.data(), GL_STATIC_DRAW);
-    glVertexAttribPointer((GLuint)ShaderVarLocations::NORMAL, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(0));
+    glVertexAttribPointer((GLuint)ShaderVarLocations::NORMAL, dimension, GL_FLOAT, GL_FALSE, dimension * sizeof(float), (void*)(0));
     glEnableVertexAttribArray((GLuint)ShaderVarLocations::NORMAL);
     glBindVertexArray(0);
 
 }
-void Model::setTextureCoords(const std::vector<float>& texture_coords){
-    if(m_texture_coord_VBO == 0){
+void Model::setTextureCoords(const std::vector<float>& texture_coords) {
+    if (m_texture_coord_VBO == 0) {
         glCreateBuffers(1, &m_texture_coord_VBO);
     }
     glBindVertexArray(m_VAO);

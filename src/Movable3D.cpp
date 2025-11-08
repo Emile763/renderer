@@ -1,18 +1,18 @@
 #include "Movable3D.h"
 #include "MatrixUtils.h"
 Movable3D::Movable3D()
-    : m_rotation{ 0.f,0.f,0.f }, m_translation_matrix{Identity}, m_rotation_matrix() ,m_scale_matrix{Identity}
+    : m_rotation{ 0.f,0.f,0.f }, m_translation_matrix{Mat4::Identity()}, m_rotation_matrix() ,m_scale_matrix(Mat4::Identity())
 {
     setRotation(m_rotation);
 }
 
-const Vec3 Movable3D::getPosition() const {
+Vec3 Movable3D::getPosition() const {
     return Vec3{m_translation_matrix[0][3], m_translation_matrix[1][3], m_translation_matrix[2][3]};
 }
-const Vec3 Movable3D::getRotation() const {
+Vec3 Movable3D::getRotation() const {
     return m_rotation;
 }
-const Vec3 Movable3D::getScale() const {
+Vec3 Movable3D::getScale() const {
     return Vec3{m_translation_matrix[0][0], m_translation_matrix[1][1], m_translation_matrix[2][2]};
 }
 

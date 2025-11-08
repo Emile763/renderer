@@ -18,8 +18,8 @@ public:
     Model(const std::string& obj_path);
     ~Model();
 
-    void setVertices(const std::vector<float>& vertices);
-    void setNormals(const std::vector<float>& normals);
+    void setVertices(const std::vector<float>& vertices, const float& dimension = 3);
+    void setNormals(const std::vector<float>& normals, const float& dimension = 3);
     void setTextureCoords(const std::vector<float>& texture_coord);
 
     void draw() const override;

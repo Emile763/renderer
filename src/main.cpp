@@ -1,7 +1,7 @@
 #include "Camera.h"
-#include "Cube.h"
+#include "Camera2D.h"
+#include "CubeModel.h"
 #include "DrawingQueue.h"
-#include "Matrix.h"
 #include "Model.h"
 #include "Object3D.h"
 #include "Shader.h"
@@ -9,11 +9,14 @@
 #include "Window.h"
 #include <chrono>
 #include <cmath>
-#include <ctime>
 #include <iostream>
-#include <random>
 #include <thread>
 #include <vector>
+#include "RectangleModel.h"
+#include "Texture.h"
+#include "ShaderTextureParameter.h"
+#include "ShaderParameterBundle.h"
+#include "Object2D.h"
 
 class InputHandler : public IInputHandler {
 public:
@@ -37,7 +40,6 @@ void InputHandler::handleInput(Window& window, int key, int scancode, int action
     (void)window;
     (void)scancode;
     (void)mods;
-
     if (action == GLFW_PRESS)
     {
         switch (key)
@@ -116,8 +118,8 @@ int main() {
     srand(time(NULL));
     constexpr float PERIOD = 1.f / 60.f;
     constexpr auto  PERIOD_DURATION = std::chrono::round<std::chrono::nanoseconds>(std::chrono::duration<float>(PERIOD));
-    constexpr int WIDTH = 800;
-    constexpr int HEIGHT = 800;
+    constexpr int WIDTH = 1920;
+    constexpr int HEIGHT = 1080;
     constexpr float PI = 3.1415926f;
     constexpr float mouse_sensibility = 0.008f;
 
@@ -129,22 +131,60 @@ int main() {
 
     Camera camera(float(WIDTH) / float(HEIGHT), 1.f, 1000.f, 70.f);
 
-    const Cube& cube_model = Cube::getInstance();
+    const CubeModel& cube_model = CubeModel::getInstance();
     Model bocal_model("./models/bocal.obj");
     Model monkey_model("./models/monkey.obj");
-    Object3D cube1, cube2, bocal, monkey;
-    cube1.setPosition({ 0.f,0.f,-3.f });
-    cube2.setPosition({ 0.f,0.f,3.f });
+    Object3D cube, bocal, monkey;
+    cube.setPosition({ 0.f,0.f,-3.f });
     bocal.setPosition({ 3.f,0.f,0.f });
     monkey.setPosition({ -3.f,0.f,0.f });
-
+    
     // Shader shader("./shaders/light_vertex.vs", "./shaders/light_fragment.fs");
     DrawingQueue drawing_queue;
     drawing_queue.addInitParameter(camera);
-    drawing_queue.add(cube_model, cube1);
-    drawing_queue.add(cube_model, cube2);
+    drawing_queue.add(cube_model, cube);
     drawing_queue.add(bocal_model, bocal);
     drawing_queue.add(monkey_model, monkey);
+   
+    Shader texture3D_shader("./shaders/texture_light_vertex.vs", "./shaders/texture_light_fragment.fs");
+    Model apple_model("./models/apple.obj");
+    Object3D apple3D;
+    apple3D.setPosition({ 0.f,0.f,3.f });
+    Texture apple3D_texture("./textures/apple3D.png");
+    ShaderTextureParameter apple3D_texture_parameter(apple3D_texture);
+    ShaderParameterBundle apple3D_parameter_bundle;
+    apple3D_parameter_bundle.add(apple3D);
+    apple3D_parameter_bundle.add(apple3D_texture_parameter);
+    DrawingQueue texture_drawing_queue(texture3D_shader);
+    texture_drawing_queue.addInitParameter(camera);
+    texture_drawing_queue.add(apple_model, apple3D_parameter_bundle);
+    
+    //--- Draw an Apple ---//
+    // load the texture
+    Texture apple_texture("./textures/apple.png");
+    // Create a parameter to use the texture
+    ShaderTextureParameter texture_parameter(apple_texture);
+    // Create an Object to set the drawing size in pixel
+    Object2D apple;
+    apple.setScale({1.f, apple_texture.getHeight()/apple_texture.getWidth()});
+    apple.setSize(0.1);
+    // Create a bundle to group all the parameters
+    ShaderParameterBundle apple_parameter_bundle;
+    apple_parameter_bundle.add(texture_parameter);
+    apple_parameter_bundle.add(apple);
+    // Get the rectangle model. It will be used as a support for the drawing
+    const RectangleModel& rectangle_model = RectangleModel::getInstance();
+    
+    // Create the 2D camera
+    Camera2D camera2D(float(WIDTH)/HEIGHT);
+    // Load the shader
+    Shader shader2d("./shaders/2Dvertex.vs", "./shaders/2Dfragment.fs");
+    // Create a drawing queue for the 2D shader
+    DrawingQueue drawing_queue_2D(shader2d);
+    drawing_queue_2D.addInitParameter(camera2D);
+    // add the model with the apple parameters to the drawing queue
+    drawing_queue_2D.add(rectangle_model, apple_parameter_bundle);
+
 
     // Crosshair
     GLuint VAO_center;
@@ -170,7 +210,8 @@ int main() {
 
     const float speed = 5.f;
     const float max_pitch_rotation = PI * 89.f / 180.f;
-    auto last_frame = std::chrono::high_resolution_clock::now();
+    auto zero_frame = std::chrono::high_resolution_clock::now();
+    auto last_frame = zero_frame;
     auto next_frame = last_frame + PERIOD_DURATION;
     while (!window.shouldClose())
     {
@@ -225,12 +266,17 @@ int main() {
         Vec3 new_pos = camera.getPosition() + delta_pos;
         camera.setPosition(new_pos);
 
+        float t = (this_frame - zero_frame).count() * 1e-9;
+        apple.setRotation(5*t);
+        apple.setPosition( {10*cosf(t), 5*sinf(2*t)});
         /**********************/
 
         /***** Rendering *****/
         window.beginDraw();
 
         drawing_queue.draw();
+        texture_drawing_queue.draw();
+        drawing_queue_2D.draw();
 
         glBindVertexArray(VAO_center);
         glDrawArrays(GL_POINTS, 0, 1);
@@ -240,6 +286,6 @@ int main() {
 
     }
 
-
+    Shader::deleteDefault3DShader();
     return 0;
 }

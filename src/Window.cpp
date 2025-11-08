@@ -43,11 +43,10 @@ Window::Window(const int& width, const int& height, const std::string title)
         std::cerr << "Error While Initializing glew: " << glewGetErrorString(err) << "\n";
         exit(EXIT_FAILURE);
     }
-    // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    // glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND);
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glEnable(GL_DEPTH_TEST);
-    
     glEnable(GL_CULL_FACE);
     number_of_windows++;
 

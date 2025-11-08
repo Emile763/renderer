@@ -33,6 +33,7 @@ public:
 
 
     static const Shader& getDefault3DShader();
+    static void deleteDefault3DShader();
 
 };
 
