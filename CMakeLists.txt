@@ -22,31 +22,43 @@ set(GLFW_BUILD_WAYLAND OFF CACHE BOOL "" FORCE)
 add_subdirectory(third-party/glfw)
 
 add_executable("RendererApp" 
-    src/Camera.cpp
-    src/Camera2D.cpp
-    src/CubeModel.cpp
+    src/camera/Camera.cpp
+    src/camera/Camera2D.cpp
+    src/drawing/DrawingQueue.cpp
+    src/drawing/model/CubeModel.cpp
+    src/drawing/model/Model.cpp
+    src/drawing/model/RectangleModel.cpp
     src/main.cpp
-    src/MatrixUtils.cpp
-    src/Model.cpp
-    src/Movable3D.cpp
-    src/Movable2D.cpp
-    src/Object3D.cpp
-    src/Object2D.cpp
-    src/Shader.cpp
-    src/Vector.cpp
-    src/Window.cpp
-    src/DrawingQueue.cpp
-    src/EmptyShaderParameter.cpp
-    src/RectangleModel.cpp
-    src/Texture.cpp
-    src/ShaderTextureParameter.cpp
-    src/ShaderParameterBundle.cpp
+    src/math/MatrixUtils.cpp
+    src/math/Vector.cpp
+    src/movable/Movable2D.cpp
+    src/movable/Movable3D.cpp
+    src/shader/parameter/empty/EmptyShaderParameter.cpp
+    src/shader/parameter/movable/Object2D.cpp
+    src/shader/parameter/movable/Object3D.cpp
+    src/shader/parameter/ShaderParameterBundle.cpp
+    src/shader/parameter/texture/ShaderTextureParameter.cpp
+    src/shader/Shader.cpp
+    src/texture/Texture.cpp
+    src/window/Window.cpp
     third-party/stb/src/stb_image.cpp
     )
 file(COPY ./shaders DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY ./models DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY ./textures DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 target_include_directories("RendererApp" PRIVATE include)
+target_include_directories("RendererApp" PRIVATE include/camera)
+target_include_directories("RendererApp" PRIVATE include/drawing)
+target_include_directories("RendererApp" PRIVATE include/drawing/model)
+target_include_directories("RendererApp" PRIVATE include/math)
+target_include_directories("RendererApp" PRIVATE include/movable)
+target_include_directories("RendererApp" PRIVATE include/shader)
+target_include_directories("RendererApp" PRIVATE include/shader/parameter)
+target_include_directories("RendererApp" PRIVATE include/shader/parameter/empty)
+target_include_directories("RendererApp" PRIVATE include/shader/parameter/movable)
+target_include_directories("RendererApp" PRIVATE include/shader/parameter/texture)
+target_include_directories("RendererApp" PRIVATE include/texture)
+target_include_directories("RendererApp" PRIVATE include/window)
 target_include_directories("RendererApp" PRIVATE third-party/stb/include)
 target_link_libraries("RendererApp" glfw GL libglew_static)
 

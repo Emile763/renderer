@@ -3,11 +3,9 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <queue>
-#include "IDrawable.h"
 #include "IInputHandler.h"
 #include "IFocusHandler.h"
 #include "Vector.h"
-#include "DrawingQueue.h"
 
 // Has to be maintain on the main thread
 struct Color
